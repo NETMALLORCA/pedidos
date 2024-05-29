@@ -1,4 +1,4 @@
-class Title extends HTMLElement {
+class Sale extends HTMLElement {
 
     constructor () {
       super()
@@ -14,23 +14,23 @@ class Title extends HTMLElement {
       /*html*/`
       
       <style>
-        h2{
-            color: hsl(0, 0%, 100%);
-            display: flex;
-            font-family: "Lato", sans-serif;
-            margin: 0;
-            padding: 1rem;
-            gap: 2rem;
-            text-transform: capitalize;
+        .button {
+          background: rgb(221,40,49);
+          color: white;
+          border: none;
+          padding: 1rem 4rem;
+          cursor: pointer;
+          font-size: 16px;
+          border-radius: 0.5rem;
+          text-transform: uppercase;
         }
-      </style>
-  
-      <div class="title">
-        <h2>pedidos</h2>
-      </div>
-      `
 
+      </style>
+        <div><button class="button">intro sale</button>
+        </div>
+      
+      `
     }
   }
   
-  customElements.define('title-component', Title);
+  customElements.define('sale-component', Sale);

@@ -13,17 +13,19 @@ class Logo extends HTMLElement {
       this.shadow.innerHTML =
       /*html*/`
       
-      <style>{
+      <style>
+        .logo img{
         align-items: left;
-        fill: 1rem;
-        padding: 20px;
+        fill: 2rem;
+        padding: 2rem;
+        max-width: 10vw;
+        max-height 5vh;
       }
       </style>
-      <div class="logo">
-        <img src="../../images/logo.png" alt="logo.png">
-      </div>
-  
-    `
+        <div class="logo">
+          <img src="../../images/logo.png" alt="logo.png">
+        </div>
+      `
     }
   }
   

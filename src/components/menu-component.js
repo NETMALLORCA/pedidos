@@ -14,42 +14,56 @@ class Menu extends HTMLElement {
       /*html*/`
 
       <style>
-        h2{
-          main{
-        width: 80%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 1rem;
+        h1, h2, h3, h4, h5, h6, span, li, label, a {
+          font-family: "Roboto", sans-serif;
+          margin: 0;
         }
-
-        .menu{
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
+        
+        ul{
+          list-style: none;
+          margin: 0;
+          padding: 0;
         }
-
-        .butom-element button{
-          text-transform: capitalize;
+        
+        a{
+          text-decoration: none;
+          color: inherit;
+        }
+        
+        img{
+          object-fit: cover;
           width: 100%;
-          border-radius: 4rem;
-          padding: 0.7rem;
-          color: (256 3% 63%);
-          font-size: medium;
+        }
+        header{
+          display: flex;
+          align-items: center;   
+          justify-content: space-between;
+          width: 100%;
+      }
+
+        .menu-links ul{
+          font-size: 1rem;
+          text-transform: capitalize;
+          display: flex;
+          flex-direction: row;
+          gap: 1rem;
+          list-style: none;
+          color: black;
+          padding: 2rem;
         }
       </style>
-      
-      <section class="menu">
-        <div class="butom-element">
-          <button type="submit">nuevos pedidos</button>
-        </div>
-  
-        <div class="butom-element">
-          <button type="submit">pedidos anteriores</button>
-        </div>
-      </section>
-      `
+
+      <div class="menu-links">
+        <ul>
+          <li><a href="#">demos</a></li>
+          <li><a href="#">shop</a></li>
+          <li><a href="#">product</a></li>
+          <li><a href="#">features</a></li>
+          <li><a href="#">documentation</a></li>
+        </ul>
+      </div>
+    `
     }
   }
   
-  customElements.define('menu-component', Menu);
+customElements.define('menu-component', Menu);
