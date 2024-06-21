@@ -1,39 +1,119 @@
-exports.create = (req, res) => {
-    console.log(req.body)
+const sequelizeDb = require('../../models')
+const User = sequelizeDb.User
+const Op = sequelizeDb.Sequelize.Op
 
-    res.send('POST request to the homepage')
+exports.create = (req, res) => {
+  User.create(req.body).then(async data => {
+    res.status(200).send(data)
+  }).catch(err => {
+    if (err.errors) {
+      res.status(422).send({
+        message: err.errors
+      })
+    } else {
+      res.status(500).send({
+        message: 'Algún error ha surgido al insertar el dato.'
+      })
+    }
+  })
 }
 
 exports.findAll = (req, res) => {
-    console.log("Parámetros")
-    console.log(req.params)
+  console.log("controlador")
+  const page = req.query.page || 1
+  const limit = parseInt(req.query.size) || 10
+  const offset = (page - 1) * limit
+  const whereStatement = {}
 
-    console.log("Query")
-    console.log(req.query) 
+  for (const key in req.query) {
+    if (req.query[key] !== '' && req.query[key] !== 'null' && key !== 'page' && key !== 'size') {
+      whereStatement[key] = { [Op.substring]: req.query[key] }
+    }
+  }
 
-    res.send('GET request to the homepage')
+  const condition = Object.keys(whereStatement).length > 0 ? { [Op.and]: [whereStatement] } : {}
+
+  User.findAndCountAll({
+    where: condition,
+    attributes: ['id', 'name', 'email', 'createdAt', 'updatedAt'],
+    limit,
+    offset,
+    order: [['createdAt', 'DESC']]
+  })
+    .then(result => {
+      result.meta = {
+        total: result.count,
+        pages: Math.ceil(result.count / limit),
+        currentPage: page,
+        size: limit
+      }
+
+      res.status(200).send(result)
+    }).catch(err => {
+      res.status(500).send({
+        message: err.errors || 'Algún error ha surgido al recuperar los datos.'
+      })
+    })
 }
 
 exports.findOne = (req, res) => {
-    console.log("Parámetros id , soy yo")
-    console.log(req.params.id)
+  const id = req.params.id
 
-    console.log("Query")
-    console.log(req.query)
-
-
-    res.send('GET request to the homepage')
+  User.findByPk(id).then(data => {
+    if (data) {
+      res.status(200).send(data)
+    } else {
+      res.status(404).send({
+        message: `No se puede encontrar el elemento con la id=${id}.`
+      })
+    }
+  }).catch(_ => {
+    res.status(500).send({
+      message: 'Algún error ha surgido al recuperar la id=' + id
+    })
+  })
 }
 
 exports.update = (req, res) => {
-    console.log(req.params.id)
-    console.log(req.body)
+  const id = req.params.id
 
-
-    res.send('PUT request to the homepage')
+  User.update(req.body, {
+    where: { id }
+  }).then(([numberRowsAffected]) => {
+    if (numberRowsAffected === 1) {
+      res.status(200).send({
+        message: 'El elemento ha sido actualizado correctamente.'
+      })
+    } else {
+      res.status(404).send({
+        message: `No se puede actualizar el elemento con la id=${id}. Tal vez no se ha encontrado el elemento o el cuerpo de la petición está vacío.`
+      })
+    }
+  }).catch(_ => {
+    res.status(500).send({
+      message: 'Algún error ha surgido al actualiazar la id=' + id
+    })
+  })
 }
 
 exports.delete = (req, res) => {
-    console.log(req.params.id)
-    res.send('DELETE request to the homepage')
+  const id = req.params.id
+
+  User.destroy({
+    where: { id }
+  }).then((numberRowsAffected) => {
+    if (numberRowsAffected === 1) {
+      res.status(200).send({
+        message: 'El elemento ha sido borrado correctamente'
+      })
+    } else {
+      res.status(404).send({
+        message: `No se puede borrar el elemento con la id=${id}. Tal vez no se ha encontrado el elemento.`
+      })
+    }
+  }).catch(_ => {
+    res.status(500).send({
+      message: 'Algún error ha surgido al borrar la id=' + id
+    })
+  })
 }
