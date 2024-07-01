@@ -3,38 +3,32 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('products', {
+    await queryInterface.createTable('user_activation_tokens', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      productCategoryId: {
+      userId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'NO ACTION'
       },
-      name: {
+      token: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      reference : {
-        type: Sequelize.STRING,
+      expirationDate: {
+        type: Sequelize.DATE,
         allowNull: false
       },
-      units: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      measurementUnit : {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      measurement : {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      visible : {
+      used: {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },
@@ -50,9 +44,14 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+
+    await queryInterface.addIndex('user_activation_tokens', ['userId'], {
+      name: 'user_activation_tokens_userId'
+    }) 
+
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('products')
+    await queryInterface.dropTable('user_activation_tokens')
   }
 }

@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-    const ProductCategory = sequelize.define('ProductCategory',
+    const EmailError = sequelize.define('EmailError',
       {
         id: {
           type: DataTypes.INTEGER,
@@ -7,8 +7,16 @@ module.exports = function (sequelize, DataTypes) {
           primaryKey: true,
           allowNull: false
         },
-        name: {
+        userType : {
           type: DataTypes.STRING,
+          allowNull: false
+        },
+        emailtemplate: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        error: {
+          type: DataTypes.TEXT,
           allowNull: false
         },
         createdAt: {
@@ -19,7 +27,7 @@ module.exports = function (sequelize, DataTypes) {
         }
       }, {
         sequelize,
-        tableName: 'product_categories',
+        tableName: 'email_errors',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -35,9 +43,9 @@ module.exports = function (sequelize, DataTypes) {
       }
     )
   
-    ProductCategory.associate = function (models) {
-
+    EmailError.associate = function (models) {
+     
     }
   
-    return ProductCategory
+    return EmailError
   }

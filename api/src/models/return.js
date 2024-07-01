@@ -1,17 +1,21 @@
 module.exports = function (sequelize, DataTypes) {
-    const Product = sequelize.define('Product',
+    const Return = sequelize.define('Return',
       {
         id: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
           autoIncrement: true,
+          primaryKey: true,
           allowNull: false
         },
-        productCategoryId: {
+        customerId: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        name: {
+        saleId : {
+          type: DataTypes.INTEGER,
+          allowNull: false
+        },
+        reference: {
           type: DataTypes.STRING,
           allowNull: false
         },
@@ -19,33 +23,27 @@ module.exports = function (sequelize, DataTypes) {
           type: DataTypes.STRING,
           allowNull: false
         },
-        units: {
-          type: DataTypes.INTEGER,
+        totalBasePrices: {
+          type: DataTypes.DECIMAL,
           allowNull: false
         },
-        measurementUnit : {
-          type: DataTypes.STRING,
+        returnDate: {
+          type: DataTypes.DATEONLY,
           allowNull: false
         },
-        measurement : {
-          type: DataTypes.INTEGER,
-          allowNull: false
-        },
-        visible : {
-          type: DataTypes.BOOLEAN,
+        returnTime: {
+          type: DataTypes.time,
           allowNull: false
         },
         createdAt: {
-          type: DataTypes.DATE,
-          allowNull: false
+          type: DataTypes.DATE
         },
         updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false
-        },
+          type: DataTypes.DATE
+        }
       }, {
         sequelize,
-        tableName: 'products',
+        tableName: 'Returns',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -58,20 +56,27 @@ module.exports = function (sequelize, DataTypes) {
             ]
           },
           {
-            name: 'products_productCategoryId_fk',
+            name: 'return_customerId_fk',
             using: 'BTREE',
             fields: [
-              { name: 'productCategoryId' }
+              { name: 'customerId' }
+            ]
+          },
+          {
+            name: 'return_saleId_fk',
+            using: 'BTREE',
+            fields: [
+              { name: 'saleId' }
             ]
           }
         ]
       }
     )
   
-    Product.associate = function (models) {
-      Product.belongsTo(models.ProductCategory, { as: 'productCategory', foreignKey: 'productCategoryId' })
-      Product.hasMany(models.Price, { as: 'prices', foreignKey: 'productId' })
+    Return.associate = function (models) {
+      Return.belongsTo(models.Sale, { as: 'sale', foreignKey: 'saleId' })
+
     }
   
-    return Product
+    return Return
   }

@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-    const Sale = sequelize.define('Sale',
+    const CustomerCredential = sequelize.define('CustomerCredential',
       {
         id: {
           type: DataTypes.INTEGER,
@@ -7,24 +7,20 @@ module.exports = function (sequelize, DataTypes) {
           primaryKey: true,
           allowNull: false
         },
-        customerId : {
+        customerId: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        reference: {
+        email: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        totalBasePrice: {
-          type: DataTypes.DECIMAL,
+        password: {
+          type: DataTypes.STRING,
           allowNull: false
         },
-        saleDate : {
-          type: DataTypes.DATEONLY,
-          allowNull: false
-        },
-        saleTime: {
-          type: DataTypes.TIME,
+        lastPasswordChange: {
+          type: DataTypes.DATE,
           allowNull: false
         },
         createdAt: {
@@ -35,7 +31,7 @@ module.exports = function (sequelize, DataTypes) {
         }
       }, {
         sequelize,
-        tableName: 'sales',
+        tableName: 'customer_credentials',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -48,7 +44,7 @@ module.exports = function (sequelize, DataTypes) {
             ]
           },
           {
-            name: 'sale_customerId_fk',
+            name: 'customer_credentials_customerId_fk',
             using: 'BTREE',
             fields: [
               { name: 'customerId' }
@@ -58,12 +54,10 @@ module.exports = function (sequelize, DataTypes) {
       }
     )
   
-    Sale.associate = function (models) {
-    Sale.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
-    Sale.hasMany(models.Return, { as: 'returns', foreignKey: 'saleId' })
-    Sale.hasMany(models.SaleDetail, { as: 'saleDetails', foreignKey: 'saleId' })
-    Sale.belongsToMany(models.Product, { through: models.SaleDetail, as: 'products', foreignKey: 'saleId' })
+    CustomerCredential.associate = function (models) {
+      CustomerCredential.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
+
     }
   
-    return Sale
+    return CustomerCredential
   }

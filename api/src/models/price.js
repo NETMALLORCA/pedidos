@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-    const Product = sequelize.define('Product',
+    const Price = sequelize.define('Price',
       {
         id: {
           type: DataTypes.INTEGER,
@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
           autoIncrement: true,
           allowNull: false
         },
-        productCategoryId: {
+        productId: {
           type: DataTypes.INTEGER,
           allowNull: false
         },
@@ -45,7 +45,7 @@ module.exports = function (sequelize, DataTypes) {
         },
       }, {
         sequelize,
-        tableName: 'products',
+        tableName: 'prices',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -58,20 +58,20 @@ module.exports = function (sequelize, DataTypes) {
             ]
           },
           {
-            name: 'products_productCategoryId_fk',
+            name: 'prices_productId_fk',
             using: 'BTREE',
             fields: [
-              { name: 'productCategoryId' }
+              { name: 'productId' }
             ]
           }
         ]
       }
     )
   
-    Product.associate = function (models) {
-      Product.belongsTo(models.ProductCategory, { as: 'productCategory', foreignKey: 'productCategoryId' })
-      Product.hasMany(models.Price, { as: 'prices', foreignKey: 'productId' })
+    Price.associate = function (models) {
+      Price.belongsTo(models.Product, { as: 'product', foreignKey: 'productId' })
+
     }
   
-    return Product
+    return Price
   }

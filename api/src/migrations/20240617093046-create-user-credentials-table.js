@@ -3,31 +3,33 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('sales', {
+    await queryInterface.createTable('user_credentials', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      customerId : {
+      userId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'NO ACTION'
       },
-      reference: {
+      email: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      totalBasePrice: {
-        type: Sequelize.DECIMAL,
+      password: {
+        type: Sequelize.STRING,
         allowNull: false
       },
-      saleDate : {
-        type: Sequelize.DATEONLY,
-        allowNull: false
-      },
-      saleTime: {
-        type: Sequelize.TIME,
+      lastPasswordChange: {
+        type: Sequelize.DATE,
         allowNull: false
       },
       createdAt: {
@@ -42,9 +44,12 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+    await queryInterface.addIndex('user_credentials', ['userId'], {
+      name: 'user_credentials_userId'
+    }) 
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('sales')
+    await queryInterface.dropTable('user_credentials')
   }
 }

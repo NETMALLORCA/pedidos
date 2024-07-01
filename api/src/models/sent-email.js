@@ -1,51 +1,41 @@
 module.exports = function (sequelize, DataTypes) {
-    const Product = sequelize.define('Product',
+    const SentEmail = sequelize.define('SentEmail',
       {
         id: {
           type: DataTypes.INTEGER,
-          primaryKey: true,
           autoIncrement: true,
+          primaryKey: true,
           allowNull: false
         },
-        productCategoryId: {
+        userId : {
           type: DataTypes.INTEGER,
           allowNull: false
         },
-        name: {
+        userType: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        reference : {
+        emailTemplate: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        units: {
-          type: DataTypes.INTEGER,
+        sendAt: {
+          type: DataTypes.DATE,
           allowNull: false
         },
-        measurementUnit : {
+        uuId: {
           type: DataTypes.STRING,
-          allowNull: false
-        },
-        measurement : {
-          type: DataTypes.INTEGER,
-          allowNull: false
-        },
-        visible : {
-          type: DataTypes.BOOLEAN,
           allowNull: false
         },
         createdAt: {
-          type: DataTypes.DATE,
-          allowNull: false
+          type: DataTypes.DATE
         },
         updatedAt: {
-          type: DataTypes.DATE,
-          allowNull: false
-        },
+          type: DataTypes.DATE
+        }
       }, {
         sequelize,
-        tableName: 'products',
+        tableName: 'sent_emails',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -58,20 +48,20 @@ module.exports = function (sequelize, DataTypes) {
             ]
           },
           {
-            name: 'products_productCategoryId_fk',
+            name: 'sent_emails_userId_fk',
             using: 'BTREE',
             fields: [
-              { name: 'productCategoryId' }
+              { name: 'userId' }
             ]
-          }
+          },
         ]
       }
     )
   
-    Product.associate = function (models) {
-      Product.belongsTo(models.ProductCategory, { as: 'productCategory', foreignKey: 'productCategoryId' })
-      Product.hasMany(models.Price, { as: 'prices', foreignKey: 'productId' })
+    SentEmail.associate = function (models) {
+      SentEmail.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
+
     }
   
-    return Product
+    return SentEmail
   }
