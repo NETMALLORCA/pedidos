@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-    const CustomerResetPasswordToken = sequelize.define('CustomerResetPasswordToken',
+    const Contact = sequelize.define('Contact',
       {
         id: {
           type: DataTypes.INTEGER,
@@ -7,20 +7,34 @@ module.exports = function (sequelize, DataTypes) {
           primaryKey: true,
           allowNull: false
         },
-        customerId: {
+        fingerprintId : {
           type: DataTypes.INTEGER,
-          allowNull: false
+          allowNull: false,
+          references: {
+            model: 'customers',
+            key: 'id'
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION'
         },
-        token: {
+        name: {
           type: DataTypes.STRING,
           allowNull: false
         },
-        expirationDate: {
-          type: DataTypes.DATE,
+        email: {
+          type: DataTypes.STRING,
           allowNull: false
         },
-        used: {
-          type: DataTypes.BOOLEAN,
+        subject: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        subject: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        message: {
+          type: DataTypes.STRING,
           allowNull: false
         },
         createdAt: {
@@ -31,7 +45,7 @@ module.exports = function (sequelize, DataTypes) {
         }
       }, {
         sequelize,
-        tableName: 'customer_reset_password_tokens',
+        tableName: 'customers',
         timestamps: true,
         paranoid: true,
         indexes: [
@@ -44,19 +58,19 @@ module.exports = function (sequelize, DataTypes) {
             ]
           },
           {
-            name: 'customer_reset_password_tokens_customerId_fk',
+            name: 'contacts_fingerprintId_fk',
             using: 'BTREE',
             fields: [
-              { name: 'customerId' }
+              { name: 'fingerprintId' }
             ]
-          },
+          }
         ]
       }
     )
   
-    CustomerResetPasswordToken.associate = function (models) {
-      CustomerResetPasswordToken.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
+    Contact.associate = function (models) {
+      Contact.belongsTo(models.Fingerprint, { as: 'fingerprint', foreignKey: 'fingerprintId' })
     }
   
-    return CustomerResetPasswordToken
+    return Contact
   }

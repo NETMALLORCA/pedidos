@@ -32,7 +32,7 @@ module.exports = function (sequelize, DataTypes) {
           allowNull: false
         },
         returnTime: {
-          type: DataTypes.time,
+          type: DataTypes.TIME,
           allowNull: false
         },
         createdAt: {

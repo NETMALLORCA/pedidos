@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-    const Customer = sequelize.define('Customer',
+    const Fingerprint = sequelize.define('Fingerprint',
       {
         id: {
           type: DataTypes.INTEGER,
@@ -7,11 +7,17 @@ module.exports = function (sequelize, DataTypes) {
           primaryKey: true,
           allowNull: false
         },
-        name: {
-          type: DataTypes.STRING,
-          allowNull: false
+        customerId : {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: {
+            model: 'customers',
+            key: 'id'
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'NO ACTION'
         },
-        email: {
+        fingerprint: {
           type: DataTypes.STRING,
           allowNull: false
         },
@@ -34,14 +40,22 @@ module.exports = function (sequelize, DataTypes) {
             fields: [
               { name: 'id' }
             ]
+          },
+          {
+            name: 'fingerprints_customerId_fk',
+            using: 'BTREE',
+            fields: [
+              { name: 'customerId' }
+            ]
           }
         ]
       }
     )
   
-    Customer.associate = function (models) {
-      Customer.hasMany(models.Fingerprint, { as: 'fingerprints', foreignKey: 'customerId' })
+    Fingerprint.associate = function (models) {
+      Fingerprint.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
+      Fingerprint.hasMany(models.Contact, { as: 'contacts', foreignKey: 'contactId' })
     }
   
-    return Customer
+    return Fingerprint
   }
