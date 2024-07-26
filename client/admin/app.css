@@ -1,0 +1,57 @@
+*{
+
+    box-sizing: border-box;
+}
+
+ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p, label, span, li {
+    color: hsl(0, 0%, 100%);
+    font-family: sans-serif;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    outline: none;
+}
+
+body {
+    background: hsl(255, 80%, 20%);
+}
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    margin-bottom: 2rem; /* Ajusta el valor según el espacio que desees */
+}
+
+.head .title {
+    color: white;
+    font-size: 1.5rem; /* Puedes ajustar el tamaño según tus necesidades */
+    text-transform: capitalize;
+    margin-right: auto;
+}
+
+.head .icon {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.head .icon svg {
+    fill: white;
+    width: 1.5rem; /* Ajusta el tamaño del icono según tus necesidades */
+    height: 1.5rem;
+}
