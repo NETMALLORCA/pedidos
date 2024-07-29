@@ -3,46 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="app.css">
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/app.css">
+    <script type="module" src="src/index.js"></script>
 </head>
 <body>
-    <header>
-
-    </header>
-    <main>
-        <div class="head">
-            <div class="title">pedidos</div> 
-            <div class="icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>menu</title><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
-            </div>
-        </div>
-        <div class="panel_general">
-            <div class="pg1">
-                <div class="pg1_1">
-                    <div class="filter">
-                        <div class="󱃥"></div> <div class="despleable"></div> 
-                    </div>
-                    <div class="pg1_2">
-                        <div class="icon_general"></div> <div class="seaching"></div> <div class="icon cleaner"></div> <div class="save"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="pg2">
-                <div class="pg2_1">
-                    <div class="textbox"></div> <div class="icon_edit"></div> <div class="ereser"></div>
-                </div>
-                <div class="pg2_2">
-                    <div class="title_2_2">
-                        <div class="title_nombre">nombre</div> <div class="title_email">email</div>
-                    </div>
-                    <div class="title_2_2">
-                        <div class="data_nombre">nombre</div> <div class="data_email">email</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    <header-component>
+        <title-component title="Pedidos"></title-component>
+        <menu-component></menu-component>
+    </header-component>
+    <main-component>
+        <table-component></table-component>
+        <form-component></form-component>
+    </main-component>
 </body>
 </html>

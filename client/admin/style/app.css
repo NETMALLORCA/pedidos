@@ -1,0 +1,5 @@
+body{
+    background-color: hwb(256 1% 66%);
+    background: radial-gradient(at 30% 45%, #3d1da7 10px,  hwb(256 1% 56%) 38%);
+    padding: 1rem;
+}
