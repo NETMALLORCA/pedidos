@@ -1,16 +1,16 @@
 class Main extends HTMLElement {
-    constructor(){
-        super()
-        this.shadow = this.attachShadow({mode: 'open'})
-    }
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+  }
 
-    connectedCallback(){
-        this.render()
-    }
+  connectedCallback () {
+    this.render()
+  }
 
-    render(){
-        this.shadow.innerHTML =
-        /*html*/`
+  render () {
+    this.shadow.innerHTML =
+      /* html */`
         <style>
             *{
                 box-sizing: border-box;
@@ -26,7 +26,7 @@ class Main extends HTMLElement {
             <slot></slot>
         </main>
         `
-    }
+  }
 }
 
 customElements.define('main-component', Main)

@@ -1,16 +1,16 @@
 class Form extends HTMLElement {
-    constructor(){
-        super()
-        this.shadow = this.attachShadow({mode: 'open'})
-    }
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+  }
 
-    connectedCallback(){
-        this.render()
-    }
+  connectedCallback () {
+    this.render()
+  }
 
-    render(){
-        this.shadow.innerHTML =
-        /*html*/`
+  render () {
+    this.shadow.innerHTML =
+      /* html */`
         <style>
             *{
                 box-sizing: border-box;
@@ -124,7 +124,7 @@ class Form extends HTMLElement {
                 <form>
                     <div class="form-element">
                         <div class="form-element-label">
-                            <label for="nombre">Nombre</label>                
+                            <label>Nombre</label>                
                         </div>
                         <div class="form-element-input">
                             <input type="text" name="name">
@@ -132,7 +132,7 @@ class Form extends HTMLElement {
                     </div>
                     <div class="form-element">
                         <div class="form-element-label">
-                            <label for="nombre">Email</label>                
+                            <label>Email</label>                
                         </div>
                         <div class="form-element-input">
                             <input type="email" name="email">
@@ -142,7 +142,7 @@ class Form extends HTMLElement {
             </div>
         </section>
         `
-    }
+  }
 }
 
 customElements.define('form-component', Form)

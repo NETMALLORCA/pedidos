@@ -1,17 +1,17 @@
 class Title extends HTMLElement {
-    constructor(){
-        super()
-        this.shadow = this.attachShadow({mode: 'open'})
-    }
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+  }
 
-    connectedCallback(){
-        this.render()
-        this.title = this.getAttribute('title')
-    }
+  connectedCallback () {
+    this.render()
+    this.title = this.getAttribute('title')
+  }
 
-    render(){
-        this.shadow.innerHTML =
-        /*html*/`
+  render () {
+    this.shadow.innerHTML =
+      /* html */`
         <style>
             *{
                 box-sizing: border-box;
@@ -28,7 +28,7 @@ class Title extends HTMLElement {
             <h1>${this.title}</h1>
         </div>
         `
-    }
+  }
 }
 
 customElements.define('title-component', Title)
