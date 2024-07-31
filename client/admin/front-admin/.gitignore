@@ -1,2 +1,4 @@
 /node_modules
 packagechage-lock.json
+.env.development
+.env.production
