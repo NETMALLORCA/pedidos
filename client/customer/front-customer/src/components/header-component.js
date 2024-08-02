@@ -1,18 +1,17 @@
 class Header extends HTMLElement {
+  constructor () {
+    super()
+    this.shadow = this.attachShadow({ mode: 'open' })
+    this.justifyContent = this.getAttribute('justify-content')
+  }
 
-    constructor () {
-      super()
-      this.shadow = this.attachShadow({ mode: 'open' })
-      this.justifyContent = this.getAttribute('justify-content')
-    }
-  
-    connectedCallback () {
-      this.render()
-    }
-  
-    render () {
-      this.shadow.innerHTML =
-      /*html*/`
+  connectedCallback () {
+    this.render()
+  }
+
+  render () {
+    this.shadow.innerHTML =
+      /* html */`
       <style>
         *{
           box-sizing: border-box;
@@ -40,7 +39,7 @@ class Header extends HTMLElement {
           <slot></slot>
         </header>
       `
-    }
   }
-  
-  customElements.define('header-component', Header);
+}
+
+customElements.define('header-component', Header)
