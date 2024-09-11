@@ -8,5 +8,10 @@
     "standard": "^17.1.0",
     "terser": "^5.31.3",
     "vite": "^5.3.5"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.2.7",
+    "lodash-es": "^4.17.21",
+    "redux": "^5.0.1"
   }
 }

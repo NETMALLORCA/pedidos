@@ -1,11 +1,33 @@
+import isEqual from 'lodash-es/isEqual'
+import { store } from '../redux/store.js'
+import { showFormElement } from '../redux/crud-slice.js'
 class Table extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
+    this.unsubscribe = null
+    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
   }
 
-  connectedCallback () {
-    this.render()
+  async connectedCallback () {
+    this.unsubscribe = null
+    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
+    this.unsubscribe = store.subscribe(async () => {
+      const currentState = store.getState()
+
+      if (currentState.crud.tableEndpoint && isEqual(this.endpoint, currentState.crud.tableEndpoint)) {
+        await this.loadData()
+        await this.render()
+      }
+    })
+
+    await this.loadData()
+    await this.render()
+  }
+
+  async loadData () {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users`)
+    this.data = await response.json()
   }
 
   render () {
@@ -142,28 +164,7 @@ class Table extends HTMLElement {
                     </ul>
                 </div>
             </div>
-            <div class="table-body">        
-                <div class="table-register">
-                    <div class="table-register-buttons">
-                        <ul>
-                            <li class="edit-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>                            
-                            </li>
-                            <li class="delete-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg>                            
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="table-register-data">
-                        <ul>
-                            <li>Nombre: Carlos</li>
-                            <li>Email: blabla@gmail.com</li>
-                            <li>Fecha de creación: 2024-02-10</li>
-                            <li>Fecha de actualización: 2024-02-10</li>
-                        </ul>                       
-                    </div>
-                </div>
-            </div>
+            <div class="table-body"></div>
             <div class="table-footer">
                 <div class="table-info">
                     <div>
@@ -178,6 +179,75 @@ class Table extends HTMLElement {
             </div>
         </section>
         `
+
+    const tables = this.shadow.querySelector('.table-body')
+
+    this.data.rows.forEach(element => {
+      const tableRegister = document.createElement('div')
+      tableRegister.classList.add('table-register')
+      tables.appendChild(tableRegister)
+
+      const tableRegisterButtons = document.createElement('div')
+      tableRegisterButtons.classList.add('table-register-buttons')
+      tableRegister.appendChild(tableRegisterButtons)
+
+      const registerButtons = document.createElement('ul')
+      registerButtons.classList.add('register-buttons')
+      tableRegisterButtons.appendChild(registerButtons)
+
+      const editButton = document.createElement('li')
+      editButton.classList.add('edit-button')
+      editButton.dataset.id = element.id
+      editButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" /></svg>'
+      registerButtons.appendChild(editButton)
+
+      const deleteButton = document.createElement('li')
+      deleteButton.classList.add('delete-button')
+      deleteButton.dataset.id = element.id
+      deleteButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" /></svg>'
+      registerButtons.appendChild(deleteButton)
+
+      const tableRegisterData = document.createElement('div')
+      tableRegisterData.classList.add('table-register-data')
+      tableRegister.appendChild(tableRegisterData)
+
+      const tableRegisterDataUl = document.createElement('ul')
+      tableRegisterData.appendChild(tableRegisterDataUl)
+
+      let elementItemList = document.createElement('li')
+      elementItemList.textContent = `nombre: ${element.name}`
+      tableRegisterDataUl.appendChild(elementItemList)
+
+      elementItemList = document.createElement('li')
+      elementItemList.textContent = `email: ${element.email}`
+      tableRegisterDataUl.appendChild(elementItemList)
+
+      elementItemList = document.createElement('li')
+      elementItemList.textContent = `creado el: ${element.createdAt}`
+      tableRegisterDataUl.appendChild(elementItemList)
+    })
+
+    this.renderRegisterButtons()
+  }
+
+  async renderRegisterButtons () {
+    this.shadow.querySelector('.table-body').addEventListener('click', async (event) => {
+      if (event.target.closest('.edit-button')) {
+        const id = event.target.closest('.edit-button').dataset.id
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${id}`)
+        const data = await response.json()
+
+        const formElement = {
+          data
+        }
+
+        store.dispatch(showFormElement(formElement))
+      }
+
+      if (event.target.closest('.delete-button')) {
+
+      }
+    })
   }
 }
 

@@ -19,7 +19,6 @@ exports.create = (req, res) => {
 }
 
 exports.findAll = (req, res) => {
-  
   const page = req.query.page || 1
   const limit = parseInt(req.query.size) || 10
   const offset = (page - 1) * limit
