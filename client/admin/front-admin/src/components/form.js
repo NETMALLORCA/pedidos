@@ -7,6 +7,7 @@ class Form extends HTMLElement {
     this.shadow = this.attachShadow({ mode: 'open' })
     this.unsubscribe = null
     this.formElementData = null
+    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
   }
 
   connectedCallback () {
@@ -165,6 +166,7 @@ class Form extends HTMLElement {
     this.shadow.querySelector('.reset-button').addEventListener('click', async (event) => {
       const form = this.shadow.querySelector('form')
       form.reset()
+      this.shadow.querySelector("[name='id']").value = ''
     })
   }
 
@@ -179,18 +181,27 @@ class Form extends HTMLElement {
         formDataJson[key] = value !== '' ? value : null
       }
 
-      const endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
+      const method = formDataJson.id ? 'PUT' : 'POST'
+      const endpoint = formDataJson.id ? `${this.endpoint}/${formDataJson.id}` : this.endpoint
 
       try {
         const response = await fetch(endpoint, {
-          method: 'POST',
+          method,
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(formDataJson)
         })
 
-        store.dispatch(refreshTable(endpoint))
+        document.dispatchEvent(new CustomEvent('message', {
+          detail: {
+            message: 'Datos guardados correctamente',
+            type: 'success'
+          }
+        }))
+
+        store.dispatch(refreshTable(this.endpoint))
+        this.shadow.querySelector("[name='id']").value = ''
         form.reset()
       } catch (error) {
         console.log(error)
@@ -199,6 +210,11 @@ class Form extends HTMLElement {
   }
 
   showElement = async element => {
+    Object.entries(element).forEach(([key, value]) => {
+      if (this.shadow.querySelector(`[name="${key}"]`)) {
+        this.shadow.querySelector(`[name="${key}"]`).value = value
+      }
+    })
   }
 }
 
