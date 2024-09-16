@@ -1,47 +1,66 @@
 module.exports = function (sequelize, DataTypes) {
-    const User = sequelize.define('User',
-      {
-        id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
-          primaryKey: true,
-          allowNull: false
-        },
-        name: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        email: {
-          type: DataTypes.STRING,
-          allowNull: false
-        },
-        createdAt: {
-          type: DataTypes.DATE
-        },
-        updatedAt: {
-          type: DataTypes.DATE
-        }
-      }, {
-        sequelize,
-        tableName: 'users',
-        timestamps: true,
-        paranoid: true,
-        indexes: [
-          {
-            name: 'PRIMARY',
-            unique: true,
-            using: 'BTREE',
-            fields: [
-              { name: 'id' }
-            ]
+  const User = sequelize.define('User',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Por favor, rellena el campo "Nombre".'
+          },
+          notEmpty: {
+            msg: 'Por favor, rellena el campo "Nombre".'
           }
-        ]
+        }
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: {
+            msg: 'Por favor, rellena el campo "Email".'
+          },
+          notEmpty: {
+            msg: 'Por favor, rellena el campo "Email".'
+          },
+          isEmail: {
+            msg: 'Por favor, rellena el campo "Email" con un email válido.'
+          }
+        }
+      },
+      createdAt: {
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        type: DataTypes.DATE
       }
-    )
-  
-    User.associate = function (models) {
-     
+    }, {
+      sequelize,
+      tableName: 'users',
+      timestamps: true,
+      paranoid: true,
+      indexes: [
+        {
+          name: 'PRIMARY',
+          unique: true,
+          using: 'BTREE',
+          fields: [
+            { name: 'id' }
+          ]
+        }
+      ]
     }
-  
-    return User
+  )
+
+  User.associate = function (models) {
+
   }
+
+  return User
+}

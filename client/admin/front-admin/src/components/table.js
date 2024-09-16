@@ -245,7 +245,14 @@ class Table extends HTMLElement {
       }
 
       if (event.target.closest('.delete-button')) {
+        const id = event.target.closest('.delete-button').dataset.id
 
+        document.dispatchEvent(new CustomEvent('show-delete-modal', {
+          detail: {
+            endpoint: this.endpoint,
+            element: `${this.endpoint}/${id}`
+          }
+        }))
       }
     })
   }

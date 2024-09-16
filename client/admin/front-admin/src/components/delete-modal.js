@@ -1,3 +1,6 @@
+import { store } from '../redux/store.js'
+import { refreshTable, showFormElement } from '../redux/crud-slice.js'
+
 class DeleteModal extends HTMLElement {
   constructor () {
     super()
@@ -5,7 +8,15 @@ class DeleteModal extends HTMLElement {
   }
 
   connectedCallback () {
+    document.addEventListener('show-delete-modal', this.handleShowDeleteModal.bind(this))
     this.render()
+  }
+
+  handleShowDeleteModal (event) {
+    this.endpoint = event.detail.endpoint
+    this.element = event.detail.element
+
+    this.shadow.querySelector('.delete-modal').classList.add('active')
   }
 
   render () {
@@ -83,8 +94,19 @@ class DeleteModal extends HTMLElement {
       </section>
       `
 
-    this.shadow.querySelector('.boton-si').addEventListener('click', () => {
+    this.shadow.querySelector('.boton-si').addEventListener('click', async () => {
+      await fetch(this.element, {
+        method: 'DELETE'
+      })
+
       this.shadow.querySelector('.delete-modal').classList.remove('active')
+      store.dispatch(refreshTable(this.endpoint))
+
+      const formElement = {
+        data: null
+      }
+
+      store.dispatch(showFormElement(formElement))
 
       document.dispatchEvent(new CustomEvent('message', {
         detail: {
