@@ -1,23 +1,37 @@
 import isEqual from 'lodash-es/isEqual'
 import { store } from '../redux/store.js'
-import { showFormElement } from '../redux/crud-slice.js'
+import { showFormElement, applyFilter } from '../redux/crud-slice.js'
 class Table extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.unsubscribe = null
     this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
+    this.queryString = null
+    this.page = 1
   }
 
   async connectedCallback () {
-    this.unsubscribe = null
-    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
     this.unsubscribe = store.subscribe(async () => {
       const currentState = store.getState()
 
       if (currentState.crud.tableEndpoint && isEqual(this.endpoint, currentState.crud.tableEndpoint)) {
         await this.loadData()
         await this.render()
+      }
+
+      if (!isEqual(this.queryString, currentState.crud.queryString)) {
+        this.queryString = currentState.crud.queryString
+        await this.loadData()
+        await this.render()
+
+        if (this.queryString) {
+          const filterButton = this.shadow.querySelector('.filter-button')
+          const filterCancelButton = this.shadow.querySelector('.filter-cancel-button')
+
+          filterButton.classList.remove('active')
+          filterCancelButton.classList.add('active')
+        }
       }
     })
 
@@ -26,7 +40,9 @@ class Table extends HTMLElement {
   }
 
   async loadData () {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users`)
+    console.log(this.page)
+    const endpoint = this.queryString ? `${this.endpoint}?${this.queryString}&page=${this.page}` : `${this.endpoint}?page=${this.page}`
+    const response = await fetch(endpoint)
     this.data = await response.json()
   }
 
@@ -35,51 +51,66 @@ class Table extends HTMLElement {
       /* html */`
         <style>
             *{
-                box-sizing: border-box;
+              box-sizing: border-box;
             }
 
             button{
-                background-color: transparent;
-                border: none;
-                outline: none;
-                padding: 0;
+              background-color: transparent;
+              border: none;
+              outline: none;
+              padding: 0;
             }
 
             ul{
-                list-style: none;
-                margin: 0;
-                padding: 0;
+              list-style: none;
+              margin: 0;
+              padding: 0;
             }
 
             label, span, li, p{
-                color: hsl(0, 0%, 100%);
-                font-family: "Ubuntu", sans-serif;
+              color: hsl(0, 0%, 100%);
+              font-family: "Ubuntu", sans-serif;
             }
 
             .table{
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
+              display: flex;
+              flex-direction: column;
+              gap: 1rem;
             }
 
             .table-header{
-                align-items: center;
-                background-color: hsl(0, 0%, 100%);
-                display: flex;
-                gap: 0.5rem;
-                padding: 0 0.5rem;
+              align-items: center;
+              background-color: hsl(0, 0%, 100%);
+              display: flex;
+              gap: 0.5rem;
+              padding: 0 0.5rem;
             }
 
             .table-header-buttons ul{
-                align-items: center;
-                display: flex;
-                gap: 0.5rem;
+              align-items: center;
+              display: flex;
+              gap: 0.5rem;
             }
+
             .table-header-buttons svg{
                 fill: hwb(256 1% 66%);
                 height: 1.8rem;
                 width: 1.8rem;
             }
+
+            .filter-button, .filter-cancel-button {
+              display: none;
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+            }
+
+            .filter-button.active, .filter-cancel-button.active{
+              display: block;
+            }
+
+
             .table-body{
                 align-items: center;
                 display: flex;
@@ -150,30 +181,68 @@ class Table extends HTMLElement {
                 font-weight: 700;
                 margin: 0;
             }
-            .table-info-button{
-                color: hsl(0, 0%, 29%);
+            .table-page-buttons{
+              align-items: center;
+              display: flex;
+              gap: 0.5rem;
+            }
+
+            .table-page-button{
+              cursor: pointer;
+              fill: hsl(225, 63%, 65%);
+              height: 1.5rem;
+              width: 1.5rem;
+            }
+
+            .current-page{
+              align-items: center;
+              display: flex;
+              height: 1.5rem;
+            }
+
+            .current-page span{
+              color: hsl(225, 63%, 65%);
+              font-weight: 600;
+              he
             }
         </style>
         <section class="table">
             <div class="table-header">
-                <div class="table-header-buttons">
-                    <ul>
-                        <li class="filter-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>filter-check</title><path d="M12 12V19.88C12.04 20.18 11.94 20.5 11.71 20.71C11.32 21.1 10.69 21.1 10.3 20.71L8.29 18.7C8.06 18.47 7.96 18.16 8 17.87V12H7.97L2.21 4.62C1.87 4.19 1.95 3.56 2.38 3.22C2.57 3.08 2.78 3 3 3H17C17.22 3 17.43 3.08 17.62 3.22C18.05 3.56 18.13 4.19 17.79 4.62L12.03 12H12M17.75 21L15 18L16.16 16.84L17.75 18.43L21.34 14.84L22.5 16.25L17.75 21" /></svg>
-                        </li>
-                    </ul>
-                </div>
+              <div class="table-header-buttons">
+                <ul>
+                  <li class="filter-button active">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>filter-check</title><path d="M12 12V19.88C12.04 20.18 11.94 20.5 11.71 20.71C11.32 21.1 10.69 21.1 10.3 20.71L8.29 18.7C8.06 18.47 7.96 18.16 8 17.87V12H7.97L2.21 4.62C1.87 4.19 1.95 3.56 2.38 3.22C2.57 3.08 2.78 3 3 3H17C17.22 3 17.43 3.08 17.62 3.22C18.05 3.56 18.13 4.19 17.79 4.62L12.03 12H12M17.75 21L15 18L16.16 16.84L17.75 18.43L21.34 14.84L22.5 16.25L17.75 21" /></svg>
+                  </li>
+                  <li class="filter-cancel-button">          
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.76,20.83L17.6,18L14.76,15.17L16.17,13.76L19,16.57L21.83,13.76L23.24,15.17L20.43,18L23.24,20.83L21.83,22.24L19,19.4L16.17,22.24L14.76,20.83M12,12V19.88C12.04,20.18 11.94,20.5 11.71,20.71C11.32,21.1 10.69,21.1 10.3,20.71L8.29,18.7C8.06,18.47 7.96,18.16 8,17.87V12H7.97L2.21,4.62C1.87,4.19 1.95,3.56 2.38,3.22C2.57,3.08 2.78,3 3,3V3H17V3C17.22,3 17.43,3.08 17.62,3.22C18.05,3.56 18.13,4.19 17.79,4.62L12.03,12H12Z" /></svg>
+                  </li>
+                </ul>
+              </div>
             </div>
             <div class="table-body"></div>
             <div class="table-footer">
                 <div class="table-info">
                     <div>
                         <p>
-                            1 registro en total, mostrando 10 por página
+                          ${this.data.count} ${this.data.count === 1 ? 'registro' : 'registros'} en total, mostrando ${this.data.meta.size} por página
                         </p>  
                     </div>                 
-                    <div class="table-info-button">
-                        <button><<</button>  
+                    <div class="table-page-buttons">
+                      <div class="table-page-button" data-page="1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18.41,7.41L17,6L11,12L17,18L18.41,16.59L13.83,12L18.41,7.41M12.41,7.41L11,6L5,12L11,18L12.41,16.59L7.83,12L12.41,7.41Z" /></svg>
+                      </div>  
+                      <div class="table-page-button" data-page="${this.data.meta.currentPage > 1 ? parseInt(this.data.meta.currentPage) - 1 : 1}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-left</title><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" /></svg>                     
+                      </div>  
+                      <div class="current-page">
+                        <span>${this.data.meta.currentPage}</span>
+                      </div>
+                      <div class="table-page-button" data-page="${parseInt(this.data.meta.currentPage) + 1}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
+                      </div>  
+                      <div class="table-page-button" data-page="${this.data.meta.pages}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-double-right</title><path d="M5.59,7.41L7,6L13,12L7,18L5.59,16.59L10.17,12L5.59,7.41M11.59,7.41L13,6L19,12L13,18L11.59,16.59L16.17,12L11.59,7.41Z" /></svg>                      
+                      </div>  
                     </div>                 
                 </div>
             </div>
@@ -231,7 +300,7 @@ class Table extends HTMLElement {
   }
 
   async renderRegisterButtons () {
-    this.shadow.querySelector('.table-body').addEventListener('click', async (event) => {
+    this.shadow.querySelector('.table').addEventListener('click', async (event) => {
       if (event.target.closest('.edit-button')) {
         const id = event.target.closest('.edit-button').dataset.id
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${id}`)
@@ -253,6 +322,25 @@ class Table extends HTMLElement {
             element: `${this.endpoint}/${id}`
           }
         }))
+      }
+
+      if (event.target.closest('.table-page-button')) {
+        const pageButton = event.target.closest('.table-page-button')
+        this.page = pageButton.dataset.page
+        await this.loadData()
+        await this.render()
+      }
+
+      if (event.target.closest('.filter-button')) {
+        document.dispatchEvent(new CustomEvent('showFilterModal'))
+      }
+
+      if (event.target.closest('.filter-cancel-button')) {
+        const filterCancelButton = event.target.closest('.filter-cancel-button')
+        const filterButton = this.shadow.querySelector('.filter-button')
+        store.dispatch(applyFilter(null))
+        filterButton.classList.add('active')
+        filterCancelButton.classList.remove('active')
       }
     })
   }
