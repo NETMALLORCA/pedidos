@@ -198,13 +198,46 @@ class Table extends HTMLElement {
               align-items: center;
               display: flex;
               height: 1.5rem;
+              width: 4rem;
             }
 
-            .current-page span{
+            .current-page input{
+              border: none;
+              border-radius: 0.5rem;
               color: hsl(225, 63%, 65%);
               font-weight: 600;
-              he
+              outline: none;
+              text-align: center;
+              width: 100%;
             }
+
+            .current-page label{
+              border: 1px solid  hsl(225, 63%, 65%);
+              border-radius: 0.5rem;
+              display: flex;
+              gap: 0.2rem;
+              padding: 0 0.2rem;
+            }
+
+            .current-page button{
+              background-color: transparent;
+              border: none;
+              cursor: pointer;
+              outline: none;
+              padding: 0;
+            }
+
+            .current-page svg{
+              fill: hsl(225, 63%, 65%);
+              width: 1.5rem;
+            }
+
+            input[type="number"]::-webkit-outer-spin-button,
+            input[type="number"]::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+
         </style>
         <section class="table">
             <div class="table-header">
@@ -235,7 +268,12 @@ class Table extends HTMLElement {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-left</title><path d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" /></svg>                     
                       </div>  
                       <div class="current-page">
-                        <span>${this.data.meta.currentPage}</span>
+                        <label>
+                          <input type="number" value="${this.data.meta.currentPage}"> 
+                          <button class="go-to-page">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4,10V14H13L9.5,17.5L11.92,19.92L19.84,12L11.92,4.08L9.5,6.5L13,10H4Z" /></svg>
+                          </button>
+                        </label>
                       </div>
                       <div class="table-page-button" data-page="${parseInt(this.data.meta.currentPage) + 1}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>chevron-right</title><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
@@ -300,6 +338,26 @@ class Table extends HTMLElement {
   }
 
   async renderRegisterButtons () {
+    this.shadow.querySelector('.go-to-page').addEventListener('click', async event => {
+      const page = this.shadow.querySelector('.current-page input').value
+
+      if (!page || page < 1 || page.includes('.') || page.includes(',')) {
+        this.shadow.querySelector('.current-page input').value = this.page
+      } else if (page > this.data.meta.pages) {
+        document.dispatchEvent(new CustomEvent('message', {
+          detail: {
+            message: `No se puede acceder a la página ${page}, solo hay ${this.data.meta.pages} ${this.data.meta.pages === 1 ? 'página disponible' : 'páginas disponibles'} `,
+            type: 'error'
+          }
+        }))
+        this.shadow.querySelector('.current-page input').value = this.page
+      } else {
+        this.page = page
+        await this.loadData()
+        await this.render()
+      }
+    })
+
     this.shadow.querySelector('.table').addEventListener('click', async (event) => {
       if (event.target.closest('.edit-button')) {
         const id = event.target.closest('.edit-button').dataset.id
