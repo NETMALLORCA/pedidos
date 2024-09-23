@@ -1,11 +1,10 @@
-import { store } from '../redux/store.js'
-import { applyFilter } from '../redux/crud-slice.js'
+import { store } from '../../redux/store.js'
+import { applyFilter } from '../../redux/crud-slice.js'
 
-class FilterModal extends HTMLElement {
+class CompaniesFilterModal extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
   }
 
   connectedCallback () {
@@ -108,18 +107,18 @@ class FilterModal extends HTMLElement {
           <form>
             <div class="form-element">
               <div class="form-label">
-                <label>Nombre</label>
+                <label>Nombre comercial</label>
               </div>
               <div class="form-input">
-                <input type="text" name="name">
+                <input type="text" name="commercialName">
               </div>
             </div>
             <div class="form-element">
               <div class="form-label">
-                <label>Email</label>
+                <label>NIF</label>
               </div>
               <div class="form-input">
-                <input type="text" name="email">
+                <input type="text" name="vatNumber">
               </div>
             </div>
           </form>
@@ -156,4 +155,4 @@ class FilterModal extends HTMLElement {
   }
 }
 
-customElements.define('filter-modal-component', FilterModal)
+customElements.define('companies-filter-modal-component', CompaniesFilterModal)

@@ -1,12 +1,13 @@
 import isEqual from 'lodash-es/isEqual'
-import { store } from '../redux/store.js'
-import { showFormElement, applyFilter } from '../redux/crud-slice.js'
-class Table extends HTMLElement {
+import { store } from '../../redux/store.js'
+import { showFormElement, applyFilter } from '../../redux/crud-slice.js'
+
+class CompaniesTable extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.unsubscribe = null
-    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
+    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/companies`
     this.queryString = null
     this.page = 1
   }
@@ -40,7 +41,6 @@ class Table extends HTMLElement {
   }
 
   async loadData () {
-    console.log(this.page)
     const endpoint = this.queryString ? `${this.endpoint}?${this.queryString}&page=${this.page}` : `${this.endpoint}?page=${this.page}`
     const response = await fetch(endpoint)
     this.data = await response.json()
@@ -322,11 +322,11 @@ class Table extends HTMLElement {
       tableRegisterData.appendChild(tableRegisterDataUl)
 
       let elementItemList = document.createElement('li')
-      elementItemList.textContent = `nombre: ${element.name}`
+      elementItemList.textContent = `nombre comercial: ${element.commercialName}`
       tableRegisterDataUl.appendChild(elementItemList)
 
       elementItemList = document.createElement('li')
-      elementItemList.textContent = `email: ${element.email}`
+      elementItemList.textContent = `nif: ${element.vatNumber}`
       tableRegisterDataUl.appendChild(elementItemList)
 
       elementItemList = document.createElement('li')
@@ -361,7 +361,7 @@ class Table extends HTMLElement {
     this.shadow.querySelector('.table').addEventListener('click', async (event) => {
       if (event.target.closest('.edit-button')) {
         const id = event.target.closest('.edit-button').dataset.id
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${id}`)
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/companies/${id}`)
         const data = await response.json()
 
         const formElement = {
@@ -404,4 +404,4 @@ class Table extends HTMLElement {
   }
 }
 
-customElements.define('table-component', Table)
+customElements.define('companies-table-component', CompaniesTable)

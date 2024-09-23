@@ -1,13 +1,14 @@
 import isEqual from 'lodash-es/isEqual'
-import { store } from '../redux/store.js'
-import { refreshTable } from '../redux/crud-slice.js'
-class Form extends HTMLElement {
+import { store } from '../../redux/store.js'
+import { refreshTable } from '../../redux/crud-slice.js'
+
+class CompaniesForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.unsubscribe = null
     this.formElementData = null
-    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/users`
+    this.endpoint = `${import.meta.env.VITE_API_URL}/api/admin/companies`
   }
 
   connectedCallback () {
@@ -99,10 +100,15 @@ class Form extends HTMLElement {
             }
 
             .form-tabs ul li{
-                background-color: hsl(272, 40%, 35%);
+                color: hsl(272, 40%, 35%);
                 cursor: pointer;
                 height: 2rem;
                 padding: 0.3rem;
+            }
+
+            .form-tabs ul li.active{
+              color: hsl(0, 0%, 100%);
+              background-color: hsl(272, 40%, 35%);
             }
 
             .form-buttons{
@@ -122,7 +128,11 @@ class Form extends HTMLElement {
                 width: 1.8rem;
             }
 
-            form{
+            .tab-content{
+              display: none;
+            }
+
+            .tab-content.active{
                 display: grid;
                 gap: 2rem;
                 grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -151,7 +161,7 @@ class Form extends HTMLElement {
             <div class="form-header">
                 <div class="form-tabs">
                     <ul>
-                        <li>General</li>
+                        <li class="tab active" data-tab="general">General</li>
                     </ul>
                 </div>
                 <div class="form-buttons">
@@ -171,22 +181,48 @@ class Form extends HTMLElement {
                 </div>
 
                 <form>
-                    <input name="id" type="hidden">
-                    <div class="form-element">
-                        <div class="form-element-label">
-                            <label>Nombre</label>                
-                        </div>
-                        <div class="form-element-input">
-                            <input type="text" name="name">
-                        </div>
-                    </div>
-                    <div class="form-element">
-                        <div class="form-element-label">
-                            <label>Email</label>                
-                        </div>
-                        <div class="form-element-input">
-                            <input type="email" name="email">
-                        </div>
+                    <div class="tab-content active" data-tab="general">
+                      <input name="id" type="hidden">
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Nombre comercial</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="text" name="commercialName">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Nombre fiscal</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="text" name="fiscalName">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Dirección comercial</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="text" name="commercialAddress">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Dirección fiscal</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="text" name="fiscalAddress">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>NIF</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="text" name="vatNumber">
+                          </div>
+                      </div>
                     </div>
                 </form>
             </div>
@@ -195,6 +231,19 @@ class Form extends HTMLElement {
 
     this.renderStoreButton()
     this.renderResetButton()
+    this.renderTabsButton()
+  }
+
+  renderTabsButton () {
+    this.shadow.querySelector('.form').addEventListener('click', async (event) => {
+      if (event.target.closest('.tab')) {
+        this.shadow.querySelector('.tab.active').classList.remove('active')
+        const tab = event.target.closest('.tab')
+        tab.classList.add('active')
+        this.shadow.querySelector('.tab-content.active').classList.remove('active')
+        this.shadow.querySelector(`.tab-content[data-tab="${tab.dataset.tab}"]`).classList.add('active')
+      }
+    })
   }
 
   renderResetButton () {
@@ -296,4 +345,4 @@ class Form extends HTMLElement {
   }
 }
 
-customElements.define('form-component', Form)
+customElements.define('companies-form-component', CompaniesForm)
