@@ -6,6 +6,7 @@ exports.create = (req, res) => {
   Contact.create(req.body).then(async data => {
     res.status(200).send(data)
   }).catch(err => {
+    console.log(err)
     if (err.errors) {
       res.status(422).send({
         message: err.errors
@@ -34,7 +35,7 @@ exports.findAll = (req, res) => {
 
   Contact.findAndCountAll({
     where: condition,
-    attributes: ['id', 'reference', 'saleDate', 'createdAt', 'updatedAt'],
+    attributes: ['id', 'fingerprintId', 'name', 'email', 'subject', 'message', 'createdAt', 'updatedAt'],
     limit,
     offset,
     order: [['createdAt', 'DESC']]

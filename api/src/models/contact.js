@@ -29,10 +29,6 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      subject: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       message: {
         type: DataTypes.STRING,
         allowNull: false
@@ -45,7 +41,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-      tableName: 'customers',
+      tableName: 'contacts',
       timestamps: true,
       paranoid: true,
       indexes: [

@@ -10,7 +10,7 @@ module.exports = {
         autoIncrement: true,
         allowNull: false
       },
-      fingerprintId : {
+      fingerprintId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -47,9 +47,6 @@ module.exports = {
       deletedAt: {
         type: Sequelize.DATE
       }
-    })
-    await queryInterface.addIndex('contacts', ['fingerprintId'], {
-      name: 'contacts_fingerprintId_index'
     })
   },
 
