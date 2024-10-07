@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      reference : {
+      reference: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -32,15 +32,15 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      measurementUnit : {
+      measurementUnit: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      measurement : {
+      measurement: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      visible : {
+      visible: {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },
