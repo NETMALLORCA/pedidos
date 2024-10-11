@@ -107,10 +107,10 @@ class ProductCategoriesFilterModal extends HTMLElement {
           <form>
             <div class="form-element">
               <div class="form-label">
-                <label>Titulo</label>
+                <label>Nombre de la categoría</label>
               </div>
               <div class="form-input">
-                <input type="text" name="title">
+                <input type="text" name="name">
               </div>
             </div>
           </form>

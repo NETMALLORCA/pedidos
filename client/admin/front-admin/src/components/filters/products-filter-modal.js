@@ -107,18 +107,18 @@ class ProductsFilterModal extends HTMLElement {
           <form>
             <div class="form-element">
               <div class="form-label">
-                <label>Nombre comercial</label>
+                <label>Nombre del producto</label>
               </div>
               <div class="form-input">
-                <input type="text" name="commercialName">
+                <input type="text" name="name">
               </div>
             </div>
             <div class="form-element">
               <div class="form-label">
-                <label>NIF</label>
+                <label>Categoria</label>
               </div>
               <div class="form-input">
-                <input type="text" name="vatNumber">
+                <input type="text" name="Category">
               </div>
             </div>
           </form>

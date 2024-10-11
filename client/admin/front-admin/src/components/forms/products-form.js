@@ -152,6 +152,14 @@ class ProductForm extends HTMLElement {
                 padding: 0.3rem 0;
             }
 
+            .form-element select{
+              background-color: hsl(225, 63%, 65%);
+              border-bottom: solid 1px #fff;
+              color: hsl(0, 0%, 100%);
+              width:  100%;
+              padding: 0.3rem 0;
+            }
+
             .form-element-input input.error{
               border-bottom: 2px solid hsl(0, 93%, 66%);
             }
@@ -185,6 +193,15 @@ class ProductForm extends HTMLElement {
                       <input name="id" type="hidden">
                       <div class="form-element">
                           <div class="form-element-label">
+                            <label>Categoía</label>                
+                          </div>
+                          <div class="form-element-input">
+                            <select name="productCategoryId" class="product-category">
+                            </select>                
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
                               <label>Nombre</label>                
                           </div>
                           <div class="form-element-input">
@@ -193,10 +210,57 @@ class ProductForm extends HTMLElement {
                       </div>
                       <div class="form-element">
                           <div class="form-element-label">
-                              <label>Email</label>                
+                              <label>Referencia</label>                
                           </div>
                           <div class="form-element-input">
-                              <input type="email" name="email">
+                              <input type="text" name="reference">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Cantidad</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="number" name="units">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Valor Medicion</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="number" name="measurement">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Unidad de Medida</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <select name="measurementUnit">
+                                <option value="ml">mililitros</option>
+                                <option value="gr">gramos</option>
+                                <option value="unidades">unidades</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Precio</label>                
+                          </div>
+                          <div class="form-element-input">
+                              <input type="number" name="basePrice">
+                          </div>
+                      </div>
+                      <div class="form-element">
+                          <div class="form-element-label">
+                              <label>Visible</label>                
+                          </div>
+                          <div class="form-element-input">
+                            <select name="visible">
+                              <option value="true">Sí</option>
+                              <option value="false">No</option>
+                            </select>
                           </div>
                       </div>
                     </div>
@@ -205,9 +269,33 @@ class ProductForm extends HTMLElement {
         </section>
         `
 
+    this.getProductCategories()
     this.renderStoreButton()
     this.renderResetButton()
     this.renderTabsButton()
+  }
+
+  async getProductCategories () {
+    const endpoint = `${import.meta.env.VITE_API_URL}/api/admin/product-categories`
+    const response = await fetch(endpoint)
+    const data = await response.json()
+
+    // Selecciona el elemento <select> del shadow DOM
+    const selectElement = this.shadow.querySelector('select[name="productCategoryId"]')
+
+    // Limpia cualquier opción anterior en el <select>
+    selectElement.innerHTML = ''
+
+    // Recorrer las categorías obtenidas de la API
+    data.rows.forEach(element => {
+      // Crear una nueva opción para cada categoría
+      const option = document.createElement('option')
+      option.value = element.id // Asignar el id de la categoría como el valor de la opción
+      option.textContent = element.name // Asignar el nombre de la categoría como el texto de la opción
+
+      // Añadir la opción al <select>
+      selectElement.appendChild(option)
+    })
   }
 
   renderTabsButton () {
